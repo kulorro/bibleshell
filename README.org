@@ -39,7 +39,7 @@ chmod +x bible.sh
 ./bible.sh -v cnvs mat 5
 #+end_example
 *** Or just "Copy" and "Paste"
-Just copy the shell codes and paste to a new file end with =.sh= and run the command =chmod +x /file/.sh=.
+Just copy the shell codes and paste to a new file end with =.sh= and run the command =chmod +x file.sh=.
 ** Configuation
 If you are behind a proxy, uncomment the follow lines and fix with appropriate values.
 #+begin_example
