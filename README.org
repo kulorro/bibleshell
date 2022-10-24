@@ -22,7 +22,7 @@ A bash script for reading the Holy Bible via command line. Only the Chinese vers
 | The Chinese Standard Bible Vesion (Simplified Chinese)            | csbs   |
 | The Chinese Union Version Modern Punctuation (Simplified Chinese) | cuvmps |
 **** Version with Traditional Chinese
-Just change the last letter of the version code from =s= to =t=. For example, the code of  The Chinese Union New Punctuation Version (Traditional Chinese) is =cunpt=.
+Just change the lastest letter of the version code from =s= to =t=. For example, the code of  The Chinese Union New Punctuation Version (Traditional Chinese) is =cunpt=.
 **** Other versions
 =ccbs=, =rcuv_s_s=, =rcuvs=,...
 *** Volumes list
