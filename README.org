@@ -1,0 +1,51 @@
+* Bible Shell
+A bash script for reading the Holy Bible via command line. Only the Chinese versions is supported Currently.
+*** Functions:
+- [X] Reading bible verses on terminal via command line.
+- [X] Locating verses according to /volumes/ and /chapters/.
+- [X] Specifying the versions.
+- [ ] Searching verses.
+** Usage
+#+begin_example
+./bible.sh [option] [volume] [chapter]
+
+#For example
+./bible.sh -v cnvs rom 12
+#+end_example
+*** Option
+- =-v [version code]= : to specify the version.
+  The default version is The Chinese Union New Punctuation Version(cunps).
+*** Versions list
+| Version                                                           | Code   |
+| The Chinese Union New Punctuation Version (Simplified Chinese)    | cunps  |
+| The Chinese New Version (Simplified Chinese)                      | cnvs   |
+| The Chinese Standard Bible Vesion (Simplified Chinese)            | csbs   |
+| The Chinese Union Version Modern Punctuation (Simplified Chinese) | cuvmps |
+**** Version with Traditional Chinese
+Just change the last letter of the version code from =s= to =t=. For example, the code of  The Chinese Union New Punctuation Version (Traditional Chinese) is =cunpt=.
+**** Other versions
+=ccbs=, =rcuv_s_s=, =rcuvs=,...
+*** Volumes list
+See [[https://springbible.fhl.net/Bible2/cgic201/Doc/abbreviation.html][Abbreviation to volumes of bible]]. Just lower all the letters. For example, the abbreviation to /1 Corinthians/ is /1Co/ and the command should look like:
+=./bible.sh -v cnvs 1co 5=
+** Installation
+*** Clone repo
+#+begin_example
+git clone https://github.com/ydche3/bibleshell.git
+cd ~/bibleshell
+chmod +x bible.sh
+
+# run to test the shell
+./bible.sh -v cnvs mat 5
+#+end_example
+*** Or just "Copy" and "Paste"
+Just copy the shell codes and paste to a new file end with =.sh= and run the command =chmod +x /file/.sh=.
+** Configuation
+If you are behind a proxy, uncomment the follow lines and fix with appropriate values.
+#+begin_example
+# Proxy Server
+#export http_proxy=http://127.0.0.1:7890
+#export https_proxy=$http_proxy
+#+end_example
+** Contributors & Feedback
+Just new an issue to contribute or feedback. Or send me an email: matthewsawillie(at)gmail(dot)com.
