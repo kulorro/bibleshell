@@ -2,12 +2,12 @@
 A bash script for reading the Holy Bible via command line. Only the Chinese versions is supported Currently.
 *** Functions:
 - [X] Reading bible verses on terminal via command line.
-- [X] Locating verses according to /volumes/ and /chapters/.
+- [X] Locating verses according to /books/ and /chapters/.
 - [X] Specifying the versions.
 - [ ] Searching verses.
 ** Usage
 #+begin_example
-./bible.sh [option] [volume] [chapter]
+./bible.sh [option] [book] [chapter]
 
 #For example
 ./bible.sh -v cnvs rom 12
@@ -25,7 +25,7 @@ A bash script for reading the Holy Bible via command line. Only the Chinese vers
 Just change the lastest letter of the version code from =s= to =t=. For example, the code of  The Chinese Union New Punctuation Version (Traditional Chinese) is =cunpt=.
 **** Other versions
 =ccbs=, =rcuv_s_s=, =rcuvs=,...
-*** Volumes list
+*** Books list
 See [[https://springbible.fhl.net/Bible2/cgic201/Doc/abbreviation.html][Abbreviation to volumes of bible]]. Just lower all the letters. For example, the abbreviation to /1 Corinthians/ is /1Co/ and the command should look like:
 =./bible.sh -v cnvs 1co 5=
 ** Installation
