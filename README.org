@@ -1,5 +1,5 @@
 * Bible Shell
-A bash script for reading the Holy Bible via command line. Only the Chinese versions is supported Currently.
+A bash script for reading the Holy Bible via command line. 
 *** Functions:
 - [X] Reading bible verses on terminal via command line.
 - [X] Locating verses according to /books/ and /chapters/.
@@ -49,3 +49,7 @@ If you are behind a proxy, uncomment the follow lines and fix with appropriate v
 #+end_example
 ** Contributors & Feedback
 Just new an issue to contribute or feedback. Or send me an email: matthewsawillie(at)gmail(dot)com.
+** Write at the end
+[[https://github.com/ydche3/bibleshell/blob/main/note.org][Some note about bible.sh.]]
+
+In fact, there are still many versions, books, chapter and verses I have never check out. I will keep checking out the rest and updating the code. 

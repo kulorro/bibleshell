@@ -1,0 +1,211 @@
+* Bible shell
+** Requirements
+- [X] Read bible verses on terminal
+- [X] Locate verses according to /books/ and /chapters/
+- [X] Support specifying versions
+- [ ] Support searching verses
+** Code
+*** Get verses via /book/ and /chapter/
+**** Basic function realization - shell code
+#+begin_example
+#!/bin/bash
+# repo: https://github.com/ydche3/bibleshell
+
+# Proxy Server
+#export http_proxy=http://127.0.0.1:7890
+#export https_proxy=$http_proxy
+
+version=cunps
+while getopts 'v:' OPTION; do
+  case "$OPTION" in
+    v)
+      version=${OPTARG}
+      ;;
+  esac
+done
+shift "$(($OPTIND - 1))"
+
+locate=$( echo $@ | sed -E 's/\s{1,}/\./g' )
+echo ${locate}
+ulocate=$( echo ${locate} | tr '[:lower:]' '[:upper:]' )
+response=$( curl -X GET https://wd.bible/bible/chapterhtml/${version}/${locate} | sed s/"content"/\\n/g | tail -1 )
+echo ${response} | sed -E s/${locate}\|${ulocate}\|\"\|"u003".\|"class"\|"href"\|"mark"\|"div"\|"id"\|"bible"\|"verse"\|"."${version}\|"="\|":"\|"微读圣经"\|"200"//g | sed -E 's/\/h5//g' | sed -E 's/\\|\}|\/|\||\.([0-9]|[1-9][0-9]|100)//g' | sed -E 's/","/\n/g' | sed -E 's/h5/\n\n/g' |  sed -E 's/[a-zA-Z]//g' | sed -E 's/\s{5,}|\,/\n/g' | sed -E 's/\s{1,4}//g'
+#+end_example
+**** DONE [#B] Support English version
+***** Get content
+#+begin_example
+curl -X GET https://wd.bible/bible/chapterhtml/niv/rom.12 | sed s/"content"/\\n/g | tail -1
+#+end_example
+Get the following text:
+#+begin_example
+":"\u003cdiv\u003e\u003ch5\u003eA Living Sacrifice \u003c/h5\u003e\n  \u003cdiv class=\"p\"\u003e\n    \u003cdiv id=\"ROM.12.1\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.1.niv\" class=\"vn\"\u003e1\u003c/a\u003eTherefore, I urge you, brothers and sisters, in view of God’s mercy, to offer your bodies as a living sacrifice, holy and pleasing to God—this is your true and proper worship. \u003c/div\u003e\u003cdiv id=\"ROM.12.2\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.2.niv\" class=\"vn\"\u003e2\u003c/a\u003eDo not conform to the pattern of this world, but be transformed by the renewing of your mind. Then you will be able to test and approve what God’s will is—his good, pleasing and perfect will. \u003c/div\u003e\u003c/div\u003e\n  \u003ch5\u003eHumble Service in the Body of Christ \u003c/h5\u003e\n  \u003cdiv class=\"p\"\u003e\n    \u003cdiv id=\"ROM.12.3\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.3.niv\" class=\"vn\"\u003e3\u003c/a\u003eFor by the grace given me I say to every one of you: Do not think of yourself more highly than you ought, but rather think of yourself with sober judgment, in accordance with the faith God has distributed to each of you. \u003c/div\u003e\u003cdiv id=\"ROM.12.4\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.4.niv\" class=\"vn\"\u003e4\u003c/a\u003eFor just as each of us has one body with many members, and these members do not all have the same function, \u003c/div\u003e\u003cdiv id=\"ROM.12.5\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.5.niv\" class=\"vn\"\u003e5\u003c/a\u003eso in Christ we, though many, form one body, and each member belongs to all the others. \u003c/div\u003e\u003cdiv id=\"ROM.12.6\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.6.niv\" class=\"vn\"\u003e6\u003c/a\u003eWe have different gifts, according to the grace given to each of us. If your gift is prophesying, then prophesy in accordance with your\u003cmark class=\"f\"\u003e\u003cspan class=\"note\"\u003e\u003cspan class=\"fr\"\u003e12:6\u003c/span\u003e\u003cspan class=\"ft\"\u003eOr \u003c/span\u003e\u003cspan class=\"fqa\"\u003ethe\u003c/span\u003e\u003c/span\u003e\u003c/mark\u003e faith; \u003c/div\u003e\u003cdiv id=\"ROM.12.7\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.7.niv\" class=\"vn\"\u003e7\u003c/a\u003eif it is serving, then serve; if it is teaching, then teach; \u003c/div\u003e\u003cdiv id=\"ROM.12.8\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.8.niv\" class=\"vn\"\u003e8\u003c/a\u003eif it is to encourage, then give encouragement; if it is giving, then give generously; if it is to lead,\u003cmark class=\"f\"\u003e\u003cspan class=\"note\"\u003e\u003cspan class=\"fr\"\u003e12:8\u003c/span\u003e\u003cspan class=\"ft\"\u003eOr \u003c/span\u003e\u003cspan class=\"fqa\"\u003eto provide for others\u003c/span\u003e\u003c/span\u003e\u003c/mark\u003e do it diligently; if it is to show mercy, do it cheerfully. \u003c/div\u003e\u003c/div\u003e\n  \u003ch5\u003eLove in Action \u003c/h5\u003e\n  \u003cdiv class=\"p\"\u003e\n    \u003cdiv id=\"ROM.12.9\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.9.niv\" class=\"vn\"\u003e9\u003c/a\u003eLove must be sincere. Hate what is evil; cling to what is good. \u003c/div\u003e\u003cdiv id=\"ROM.12.10\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.10.niv\" class=\"vn\"\u003e10\u003c/a\u003eBe devoted to one another in love. Honor one another above yourselves. \u003c/div\u003e\u003cdiv id=\"ROM.12.11\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.11.niv\" class=\"vn\"\u003e11\u003c/a\u003eNever be lacking in zeal, but keep your spiritual fervor, serving the Lord. \u003c/div\u003e\u003cdiv id=\"ROM.12.12\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.12.niv\" class=\"vn\"\u003e12\u003c/a\u003eBe joyful in hope, patient in affliction, faithful in prayer. \u003c/div\u003e\u003cdiv id=\"ROM.12.13\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.13.niv\" class=\"vn\"\u003e13\u003c/a\u003eShare with the Lord’s people who are in need. Practice hospitality. \u003c/div\u003e\u003c/div\u003e\n  \u003cdiv class=\"p\"\u003e\n    \u003cdiv id=\"ROM.12.14\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.14.niv\" class=\"vn\"\u003e14\u003c/a\u003eBless those who persecute you; bless and do not curse. \u003c/div\u003e\u003cdiv id=\"ROM.12.15\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.15.niv\" class=\"vn\"\u003e15\u003c/a\u003eRejoice with those who rejoice; mourn with those who mourn. \u003c/div\u003e\u003cdiv id=\"ROM.12.16\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.16.niv\" class=\"vn\"\u003e16\u003c/a\u003eLive in harmony with one another. Do not be proud, but be willing to associate with people of low position.\u003cmark class=\"f\"\u003e\u003cspan class=\"note\"\u003e\u003cspan class=\"fr\"\u003e12:16\u003c/span\u003e\u003cspan class=\"ft\"\u003eOr \u003c/span\u003e\u003cspan class=\"fqa\"\u003ewilling to do menial work\u003c/span\u003e\u003c/span\u003e\u003c/mark\u003e Do not be conceited. \u003c/div\u003e\u003c/div\u003e\n  \u003cdiv class=\"p\"\u003e\n    \u003cdiv id=\"ROM.12.17\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.17.niv\" class=\"vn\"\u003e17\u003c/a\u003eDo not repay anyone evil for evil. Be careful to do what is right in the eyes of everyone. \u003c/div\u003e\u003cdiv id=\"ROM.12.18\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.18.niv\" class=\"vn\"\u003e18\u003c/a\u003eIf it is possible, as far as it depends on you, live at peace with everyone. \u003c/div\u003e\u003cdiv id=\"ROM.12.19\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.19.niv\" class=\"vn\"\u003e19\u003c/a\u003eDo not take revenge, my dear friends, but leave room for God’s wrath, for it is written: “It is mine to avenge; I will repay,”\u003cmark class=\"f\"\u003e\u003cspan class=\"note\"\u003e\u003cspan class=\"fr\"\u003e12:19\u003c/span\u003e\u003cspan class=\"ft\"\u003eDeut. 32:35\u003c/span\u003e\u003c/span\u003e\u003c/mark\u003e says the Lord. \u003c/div\u003e\u003cdiv id=\"ROM.12.20\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.20.niv\" class=\"vn\"\u003e20\u003c/a\u003eOn the contrary: \u003c/div\u003e\u003c/div\u003e\n  \u003cdiv class=\"pi\" for=\"ROM.12.20\"\u003e“If your enemy is hungry, feed him; \u003c/div\u003e\n  \u003cdiv class=\"pi\" for=\"ROM.12.20\"\u003eif he is thirsty, give him something to drink. \u003c/div\u003e\n  \u003cdiv class=\"pi\" for=\"ROM.12.20\"\u003eIn doing this, you will heap burning coals on his head.”\u003cmark class=\"f\"\u003e\u003cspan class=\"note\"\u003e\u003cspan class=\"fr\"\u003e12:20\u003c/span\u003e\u003cspan class=\"ft\"\u003eProv. 25:21,22\u003c/span\u003e\u003c/span\u003e\u003c/mark\u003e \u003c/div\u003e\n  \u003cdiv class=\"m\"\u003e\n    \u003cdiv id=\"ROM.12.21\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.21.niv\" class=\"vn\"\u003e21\u003c/a\u003eDo not be overcome by evil, but overcome evil with good. \u003c/div\u003e\u003c/div\u003e\u003c/div\u003e","pageTitle":"罗马书 12章 NIV | 微读圣经"},"errno":200,"msg":"success"}
+#+end_example
+***** Analyze text
+****** Headers
+A header starts with =\u003ch5\u003e= and ends with =\u003c/h5\u003e\n=. For example:
+#+begin_example
+\u003ch5\u003eA Living Sacrifice \u003c/h5\u003e\n
+#+end_example
+****** Paragraphs
+A paragraph starts with
+#+begin_example
+\u003cdiv class=\"p\"\u003e\n"
+#+end_example
+and ends with =\u003c/div\u003e\n=. For example: 
+#+begin_example
+\u003cdiv class=\"p\"\u003e\n    \u003cdiv id=\"ROM.12.1\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.1.niv\" class=\"vn\"\u003e1\u003c/a\u003eTherefore, I urge you, brothers and sisters, in view of God’s mercy, to offer your bodies as a living sacrifice, holy and pleasing to God—this is your true and proper worship. \u003c/div\u003e\u003cdiv id=\"ROM.12.2\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.2.niv\" class=\"vn\"\u003e2\u003c/a\u003eDo not conform to the pattern of this world, but be transformed by the renewing of your mind. Then you will be able to test and approve what God’s will is—his good, pleasing and perfect will. \u003c/div\u003e\u003c/div\u003e\n
+#+end_example
+****** Verses
+We can find that every verses start with
+#+begin_example
+\u003cdiv id=\"ROM.12.[1-21]\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.[1-21].niv\" class=\"vn\"\u003e[1-21]\u003c/a\u003e
+#+end_example
+and end with =\u003c/div\u003e=. For example: 
+#+begin_example
+\u003cdiv id=\"ROM.12.1\" class=\"v\"\u003e\u003ca href=\"/bible/verse/rom.12.1.niv\" class=\"vn\"\u003e1\u003c/a\u003eTherefore, I urge you, brothers and sisters, in view of God’s mercy, to offer your bodies as a living sacrifice, holy and pleasing to God—this is your true and proper worship. \u003c/div\u003e
+#+end_example
+****** The whole content
+The whole content starts with =\u003cdiv\u003e= and ends with =\u003c/div\u003e=.
+****** Marks
+And the marks start with
+#+begin_example
+\u003cmark class=\"f\"\u003e\u003cspan class=\"note\"\u003e\u003cspan class=\"fr\"\u003e12:[1-21]\u003c/span\u003e\u003cspan class=\"ft\"\u003e
+#+end_example
+and end with
+#+begin_example
+\u003c/span\u003e\u003c/span\u003e\u003c/mark\u003e
+#+end_example
+And there may be
+#+begin_example
+\u003c/span\u003e\u003cspan class=\"fqa\"\u003e
+#+end_example
+inside the marks.
+****** Indentation
+A indentation starts with
+#+begin_example
+\u003cdiv class=\"pi\" for=\"ROM.12.20\"\u003e
+#+end_example
+and end with
+#+begin_example
+\u003cdiv class=\"m\"\u003e\n
+#+end_Example
+***** Regular expressions - Organise the text via sed
+#+begin_example
+curl -X GET https://wd.bible/bible/chapterhtml/niv/rom.12 | sed s/"content"/\\n/g | tail -1 | sed -E 's/\\u003c\h5\\u003e/\n\n\n/g' | sed -E 's/\\u003c\/h5\\u003e\\n/\n/g' | sed -E 's/\\u003cdiv\s{0,1}class=\\"p\\"\\u003e\\n|\\u003cdiv\s{0,1}class=\\"m\\"\\u003e\\n/\n/g' | sed -E 's/\\u003c\/div\\u003e(\\n)?//g' | sed -E 's/\\u003cdiv\s{0,1}id=\\"ROM\.12\.([0-9]|[1-9][0-9])\\"\s{0,1}class=\\"v\\"\\u003e\\u003ca\s{0,1}href=\\"\/bible\/verse\/rom.12\.([0-9]|[1-9][0-9])\.niv\\"\s{0,1}class=\\"vn\\"\\u003e|\\u003c\/a\\u003e|\\u003cdiv\\u003e//g' | sed -E 's/\\u003cmark\s{0,1}class=\\"f\\"\\u003e\\u003cspan\s{0,1}class=\\"note\\"\\u003e\\u003cspan\s{0,1}class=\\"fr\\"\\u003e12:([0-9]|[1-9][0-9])\\u003c\/span\\u003e\\u003cspan\s{0,1}class=\\"ft\\"\\u003e/(/g' | sed -E 's/\\u003c\/span\\u003e\\u003c\/span\\u003e\\u003c\/mark\\u003e/)/g' | sed -E 's/\\u003c\/span\\u003e\\u003cspan\s{0,1}class=\\"fqa\\"\\u003e//g' | sed -E 's/\\u003cdiv\s{0,1}class=\\"pi\\"\s{0,1}for=\\"ROM\.12\./\n        /g' | sed -E 's/\\"\\u003e//g' | sed -E 's/","pageTitle":"/\n(/g' | sed -E 's/"\},"errno":200,"msg":"success"\}/)\n/g' | sed -E 's/":"//g'
+#+end_example
+***** shell code - bible-en.sh
+#+begin_example
+#!/bin/bash
+# repo: https://github.com/ydche3/bibleshell
+
+# Proxy Server
+export http_proxy=http://127.0.0.1:7890
+export https_proxy=$http_proxy
+
+version=cunps
+while getopts 'v:' OPTION; do
+  case "$OPTION" in
+    v)
+      version=${OPTARG}
+      ;;
+  esac
+done
+shift "$(($OPTIND - 1))"
+
+locate=$( echo $@ | sed -E 's/\s{1,}/\./g' )
+ulocate=$( echo ${locate} | tr '[:lower:]' '[:upper:]' )
+response=$( curl -X GET https://wd.bible/bible/chapterhtml/${version}/${locate} | sed s/"content"/\\n/g | tail -1 )
+echo ${response} | sed -E "s/${locate}|${ulocate}|.${version}//g" | sed -E 's/\\u003c\h5\\u003e/\n\n\n/g' | sed -E 's/\\u003c\/h5\\u003e\\n/\n/g' | sed -E 's/\\u003cdiv\s{0,1}class=\\"p\\"\\u003e\\n|\\u003cdiv\s{0,1}class=\\"m\\"\\u003e\\n/\n/g' | sed -E 's/\\u003c\/div\\u003e(\\n)?//g' | sed -E 's/\\u003cdiv\s{0,1}id=\\"\.([0-9]|[1-9][0-9])\\"\s{0,1}class=\\"v\\"\\u003e\\u003ca\s{0,1}href=\\"\/bible\/verse\/\.([0-9]|[1-9][0-9])\\"\s{0,1}class=\\"vn\\"\\u003e|\\u003c\/a\\u003e|\\u003cdiv\\u003e//g' | sed -E 's/\\u003cmark\s{0,1}class=\\"f\\"\\u003e\\u003cspan\s{0,1}class=\\"note\\"\\u003e\\u003cspan\s{0,1}class=\\"fr\\"\\u003e([0-9]|[1-9][0-9]):([0-9]|[1-9][0-9])\\u003c\/span\\u003e\\u003cspan\s{0,1}class=\\"ft\\"\\u003e.{1,}\\u003c\/span\\u003e\\u003c\/span\\u003e\\u003c\/mark\\u003e//g' | sed -E 's/\\u003cdiv\s{0,1}class=\\"pi\\"\s{0,1}for=\\"\./\n        /g' | sed -E 's/\\"\\u003e//g' | sed -E 's/","pageTitle":"/\n(/g' | sed -E 's/"\},"errno":200,"msg":"success"\}/)\n/g' | sed -E 's/":"//g'
+#+end_example
+SCHEDULED: <2022-10-25 Tue>
+**** DONE [#B] Refactor the code
+It turns out that the code support english is more universal than which support chinese. So it's time to refactor the code to adapt to more usage scenarios.
+***** Support to Chinese
+Run the /bible-en.sh/ specifying version to /cunps/, we get:
+#+begin_example
+基督里的新生活
+
+ 1所以，弟兄们，我以　神的慈悲劝你们，将身体献上，当作活祭，是圣洁的，是　神所喜悦的；你们如此侍奉乃是理所当然的。 2不要效法这个世界，只要心意更新而变化，叫你们察验何为　神的善良、纯全、可喜悦的旨意。
+ 3我凭着所赐我的恩对你们各人说：不要看自己过于所当看的；要照着　神所分给各人信心的大小，看得合乎中道。 4正如我们一个身子上有好些肢体，肢体也不都是一样的用处。 5我们这许多人，在基督里成为一身，互相联络作肢体，也是如此。 6按我们所得的恩赐，各有不同。或说预言，就当照着信心的程度说\u003cmark class=\"add预言\u003c/mark\u003e； 7或作执事，就当\u003cmark class=\"add专一\u003c/mark\u003e执事；或作教导的，就当\u003cmark class=\"add专一\u003c/mark\u003e教导； 8或作劝化的，就当\u003cmark class=\"add专一\u003c/mark\u003e劝化；施舍的，就当诚实；治理的，就当殷勤；怜悯人的，就当甘心。
+
+
+基督徒的生活守则
+
+9爱人不可虚假。恶，要厌恶；善，要亲近。 10爱弟兄，要彼此亲热；恭敬人，要彼此推让。 11殷勤，不可懒惰；要心里火热，常常服侍主。 12在指望中要喜乐；在患难中要忍耐；祷告要恒切。 13圣徒缺乏，要帮补；客，要一味地款待。 14逼迫你们的，要给他们祝福；只要祝福，不可咒诅。 15与喜乐的人要同乐；与哀哭的人要同哭。 16要彼此同心；不要志气高大，倒要俯就卑微的人（\u003cspan class=\"ft“人”或作“事”\u003c/span\u003e）。不要自以为聪明。 17不要以恶报恶；众人以为美的事要留心去做。 18若是能行，总要尽力与众人和睦。 19亲爱的弟兄，不要自己伸冤，宁可让步，听凭主怒（\u003cspan class=\"ft或作“让人发怒”\u003c/span\u003e）；因为\u003cmark class=\"add经上\u003c/mark\u003e记着：“主说：‘伸冤在我，我必报应。’” 20所以，“你的仇敌若饿了，就给他吃，若渴了，就给他喝；因为你这样行就是把炭火堆在他的头上。” 21你不可为恶所胜，反要以善胜恶。
+(罗马书 12章 和合本 | 微读圣经)
+#+end_example
+It looks like /cunps/ has some words marked. starting with
+#+begin_example
+\u003cmark class=\"add
+#+end_example
+and end with =\u003c/mark\u003e=.
+Which could be easy replace with /null/ using:
+#+begin_example
+sed -E 's/\\u003cmark\s{0,1}class=\\"add|\\u003c\/mark\\u003e//g'
+#+end_example
+There are some words starting with
+#+begin_example
+\u003cspan class=\"ft
+#+end_example
+and end with =\u003c/span\u003e=, which could also be replace with /null/.
+We can use the following command to replace all the text above: 
+#+begin_example
+sed -E 's/\\u003cmark\s{0,1}class=\\"add|\\u003c\/mark\\u003e|\\u003cspan\s{0,1}class=\\"ft|\\u003c\/span\\u003e//g'
+#+end_example
+***** Adapt to more verses
+When I run /bible-en.sh/ with =./bible.sh -v niv mat 6=, I got:
+#+begin_example
+Giving to the Needy
+
+ 1\n \u003cspan class=\"wj“Be careful not to practice your righteousness in front of others to be seen by them. If you do, you will have no reward from your Father in heaven.
+ 2\n \u003cspan class=\"wj“So when you give to the needy, do not announce it with trumpets, as the hypocrites do in the synagogues and on the streets, to be honored by others. Truly I tell you, they have received their reward in full. 3\u003cspan class=\"wjBut when you give to the needy, do not let your left hand know what your right hand is doing, 4\u003cspan class=\"wjso that your giving may be in secret. Then your Father, who sees what is done in secret, will reward you.
+
+...
+...
+#+end_example
+There is a new kind of "span", which is
+#+begin_example
+\u003cspan class=\"wj
+#+end_example
+Compared with the other "span", like
+#+begin_example
+\u003cspan class=\"fqa
+\u003cspan class=\"ft
+#+end_example
+they can be write as:
+#+begin_example
+\u003cspan class=\"[a-z]{2,}
+#+end_example
+We can change the command to
+#+begin_example
+sed -E 's/\\u003cspan\s{0,1}class=\\"[a-z]{2,}//g'
+#+end_example
+to replace all the "span" with /null/.
+Last, replace all the =\n= with /null/.
+
+In fact, there are still many versions, books, chapter and verses I have never check out. But whatever text need to be replaced, we can use the some way to deal with them. I will keep checking out the rest of the bible with different version, and updating the shell.
+***** Code - bible.sh
+#+begin_example
+#!/bin/bash
+# repo: https://github.com/ydche3/bibleshell
+
+# Proxy Server
+export http_proxy=http://127.0.0.1:7890
+export https_proxy=$http_proxy
+
+version=cunps
+while getopts 'v:' OPTION; do
+  case "$OPTION" in
+    v)
+      version=${OPTARG}
+      ;;
+  esac
+done
+shift "$(($OPTIND - 1))"
+
+locate=$( echo $@ | sed -E 's/\s{1,}/\./g' )
+ulocate=$( echo ${locate} | tr '[:lower:]' '[:upper:]' )
+response=$( curl -X GET https://wd.bible/bible/chapterhtml/${version}/${locate} | sed s/"content"/\\n/g | tail -1 )
+echo ${response} | sed -E "s/${locate}|${ulocate}|.${version}//g" | sed -E 's/\\u003c\h5\\u003e/\n\n\n/g' | sed -E 's/\\u003c\/h5\\u003e\\n/\n/g' | sed -E 's/\\u003cdiv\s{0,1}class=\\"p\\"\\u003e\\n|\\u003cdiv\s{0,1}class=\\"m\\"\\u003e\\n/\n/g' | sed -E 's/\\u003c\/div\\u003e(\\n)?//g' | sed -E 's/\\u003cdiv\s{0,1}id=\\"\.([0-9]|[1-9][0-9])\\"\s{0,1}class=\\"v\\"\\u003e\\u003ca\s{0,1}href=\\"\/bible\/verse\/\.([0-9]|[1-9][0-9])\\"\s{0,1}class=\\"vn\\"\\u003e|\\u003c\/a\\u003e|\\u003cdiv\\u003e//g' | sed -E 's/\\u003cmark\s{0,1}class=\\"f|\\"\\u003e\\u003cspan\s{0,1}class=\\"note\\"\\u003e\\u003cspan\s{0,1}class=\\"fr\\"\\u003e([0-9]|[1-9][0-9]):([0-9]|[1-9][0-9])\\u003c\/span\\u003e\\u003cspan\s{0,1}class=\\"ft\\"\\u003e.{1,}\\u003c\/span\\u003e\\u003c\/span\\u003e\\u003c\/mark\\u003e//g' | sed -E 's/\\u003cdiv\s{0,1}class=\\"pi(\\"\s{0,1}for=\\"\.)?/\n        /g' | sed -E 's/\\"\\u003e//g' | sed -E 's/\\u003cmark\s{0,1}class=\\"add|\\u003c\/mark\\u003e|\\u003cspan\s{0,1}class=\\"[a-z]{2,}|\\u003c\/span\\u003e//g' | sed -E 's/","pageTitle":"/\n(/g' | sed -E 's/"\},"errno":200,"msg":"success"\}/)\n/g' | sed -E 's/":"//g' | sed -E 's/\\n//g'
+#+end_example
+*** TODO [#B] Searching verses
